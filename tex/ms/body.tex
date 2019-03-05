@@ -91,6 +91,12 @@ and to an existing category with probability
 In this special case the \discount parameter becomes the probability of
 assigning an element to a new category.
 
+This special case is ``fully defined'' process where we can
+go from $\pr(\numcats = 1) = 1$ when $\discount = 0$ to
+$\pr(\numcats = \numelements) = 1$ as $\discount \to 1$.
+This is not true as $\concentration \to 0$ under the Pitman-Yor process.
+This is also not true for the altnernative weighting scheme explored below.
+
 
 \subsection{An alternative weighted-discount process}
 
