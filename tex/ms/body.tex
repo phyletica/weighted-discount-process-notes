@@ -1,0 +1,117 @@
+\section{Introduction}
+
+The Dirichlet process (DP) is specified by a based distribution \basedistribution
+and a concentration parameter \concentration parameter.
+For now, let's ignore \basedistribution and only focus on the partitioning
+aspect of the Dirichlet process, which is controlled by \concentration.
+That is, if we are assigning \numelements elements to an unknown number of
+categories, the \concentration determines the probability of all possible set
+partitions of the \numelements.
+
+When assigning the the next element, it goes into
+a new category with probability
+\begin{equation}
+    \frac{\concentration}{\concentration + \numassignedtotal},
+    \label{eq:dpprobnew}
+\end{equation}
+where \numassignedtotal is the number of elements that have already been
+assigned.
+The element can also be assigned to an existing category \catindex with probability
+\begin{equation}
+    \frac{\numassigned[\catindex]}{\concentration + \numassignedtotal},
+    \label{eq:dpprobexisting}
+\end{equation}
+where \numassigned[\catindex] is the number of elements already assigned
+to category \catindex.
+
+The Pitman-Yor process (PYP) generalizes the Dirichlet process by adding
+a discount parameter \discount.
+Under a Pitman-Yor process
+we assign the next element to a new category with probability
+\begin{equation}
+    \frac{\concentration + \numcats\discount}{\concentration + \numassignedtotal},
+    \label{eq:pyprobnew}
+\end{equation}
+where \numcats is the number of existing categories.
+We assign the next element to an existing category with probability
+\begin{equation}
+    \frac{\numassigned[\catindex] - \discount}{\concentration + \numassignedtotal}.
+    \label{eq:pyprobexisting}
+\end{equation}
+This creates a penalty for adding an element to an existing category, but as we
+can see in Equation~\ref{eq:pyprobexisting}, this penalty has a greater effect
+on categories with fewer elements.
+Thus, conditional on adding an element to an existing category, this
+excacerbates the ``rich-get-richer'' property of the Dirichlet process.
+Furthermore, the relative probability of assigning a new element to existing
+large categories increases as the penalty (\discount) increases (conditional on
+assigning it to an existing category).
+
+\subsection{Weighted-discount process}
+
+To give small existing categories more probability of getting more elements
+compared to large existing categories, we can weight the discount parameter
+by the number of elements in each category. Specifically, 
+we can assign the next element to a new category with probability
+\begin{equation}
+    \frac{\concentration + \numassignedtotal\discount}{\concentration + \numassignedtotal},
+    \label{eq:wdprobnew}
+\end{equation}
+and to an existing category with probability
+\begin{equation}
+    \frac{\numassigned[\catindex] - (\numassigned[\catindex]\discount)}{\concentration + \numassignedtotal}.
+    \label{eq:wdprobexisting}
+\end{equation}
+Now the penalty is proportional to the size of each category.
+We'll call this the weighted-discount process (WDP).
+
+This has some interesting properties.
+It still converges to the Dirichlet process when $\discount = 0$ (just like the
+Pitman-Yor) process.
+However, now there are two ways the process can converge to a continuous
+process (i.e., the probability that number of categories equal the number of
+elements becomes one); the \concentration can go to infinity or the
+\discount can approach 1.
+This is because the WDP is a mixture (\jrocomment{I'm not sure if ``mixture''
+    is technically correct here}) of two processes: the Dirichlet process and a
+pure weighted-discount process.
+When the \discount is zero, we get the Dirichlet process.
+As the \concentration approaches zero, we converge on a pure
+weighted-discount process, where the next element is assigned to
+a new category with probability
+\begin{equation}
+    \frac{\numassignedtotal\discount}{\numassignedtotal},
+    \label{eq:pwdprobnew}
+\end{equation}
+and to an existing category with probability
+\begin{equation}
+    \frac{\numassigned[\catindex] - (\numassigned[\catindex]\discount)}{\numassignedtotal}.
+    \label{eq:pwdprobexisting}
+\end{equation}
+In this special case the \discount parameter becomes the probability of
+assigning an element to a new category.
+
+
+\subsection{An alternative weighted-discount process}
+
+We can also think of adjusting the weights such that the absolute weight of
+assigning to new category is the same as in the Pitman-Yor process.
+The next element is assigned to
+a new category with probability
+\begin{equation}
+    \frac{\concentration + \numcats\discount}{\concentration + \numassignedtotal},
+    \label{eq:pywdprobnew}
+\end{equation}
+and to an existing category with probability
+\begin{equation}
+    \frac{\numassigned[\catindex] - (\frac{\numassigned[\catindex]}{\numassignedmean}\discount)}{\concentration + \numassignedtotal},
+    \label{eq:pywdprobexisting}
+\end{equation}
+where \numassignedmean is the mean number of elements already assigned to
+categories.  We still have the interval of the discount of $\discount \in [0,
+1)$, because the smallest possible \numassignedmean is 1.
+This is similar to the Pitman-Yor process, but with some ``smoothing'' out of
+the relative probabilities of existing categories getting a new element.
+This avoids the process having two ways of converging to continuous
+(i.e., the probability that number of categories equal the number of
+elements becoming one).
