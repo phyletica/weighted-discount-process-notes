@@ -97,6 +97,11 @@ $\pr(\numcats = \numelements) = 1$ as $\discount \to 1$.
 This is not true as $\concentration \to 0$ under the Pitman-Yor process.
 This is also not true for the altnernative weighting scheme explored below.
 
+Here's the catch: the elements are not exchangeable under the weighted-discount
+process, or the altnernative below (the order in which they are assigned to
+repective sets changes the probability of a partition).
+Thus, Neal's Gibbs sampler won't work for these processes.
+
 
 \subsection{An alternative weighted-discount process}
 
